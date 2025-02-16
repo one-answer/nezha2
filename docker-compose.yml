@@ -1,0 +1,10 @@
+version: "3"
+services:
+  talk-ai-front:
+    image: aolifu/nezha2:v1
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+    container_name: nezha2
+    ports:
+      - "11009:80"
