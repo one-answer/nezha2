@@ -585,7 +585,7 @@ const useWebSocket = (movieId) => {
       }
 
       console.log('开始建立新的 WebSocket 连接');
-      const ws = new WebSocket('wss://nezha2.xxlb.org');
+      const ws = new WebSocket('wss://nezha3.xxlb.org');
       wsRef.current = ws;
 
       ws.onopen = () => {
