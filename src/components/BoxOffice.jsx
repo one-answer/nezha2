@@ -9,7 +9,7 @@ import nezha2Banner1 from '../assets/nezha2_banner.webp?url';
 import nezha2Banner2 from '../assets/nezha2_banner2.jpg?url';
 import nezha2Banner3 from '../assets/nezha2_banner3.jpg?url';
 
-const userAgent = navigator.userAgent
+const userAgent = window.navigator.userAgent
 
 const ua = () => {
   const regs = {
