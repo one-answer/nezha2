@@ -9,6 +9,52 @@ import nezha2Banner1 from '../assets/nezha2_banner.webp?url';
 import nezha2Banner2 from '../assets/nezha2_banner2.jpg?url';
 import nezha2Banner3 from '../assets/nezha2_banner3.jpg?url';
 
+const userAgent = navigator.userAgent
+
+const ua = () => {
+  const regs = {
+    // 系统
+    // 'ios': /iphone|ipad|ipod/,
+    android: /android/i,
+
+    // 机型
+    iphone: /iphone/i,
+    ipad: /ipad/i,
+    ipod: /ipod/i,
+    vivo: /vivo/i,
+    oppo: /oppo/i,
+    huawei: /huawei/i,
+    redmi: /redmi/i,
+    xiaomi: /xiaomi/i,
+    meizu: /meizu/i,
+
+    // 环境
+    weixin: /micromessenger/i, // 微信
+    mqq: /QQ\//i, // qq
+    app: /inke/i,
+    alipay: /aliapp/i,
+    weibo: /weibo/i,
+    dingtalk: /DingTalk/i, // 钉钉
+
+    // 浏览器
+    chrome: /chrome\//i,
+    qqbrowser: /MQQBrowser/i,
+    baidu: /baidu/i
+  }
+
+  const ret = {}
+  Object.keys(regs).forEach(key => {
+    var reg = regs[key]
+    ret[key] = reg.test(userAgent)
+  })
+  ret.ios = ret.iphone || ret.ipad || ret.ipod
+  ret.mobile = ret.ios || ret.android
+
+  return ret
+}
+
+const isMobile = ua().mobile;
+
 // 票房数据处理 Hook
 const useBoxOfficeData = (data) => {
   return React.useMemo(() => {
@@ -1060,7 +1106,7 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
         {/* 主要内容区域 - 使用网格布局 */}
         <div className="flex-1 grid grid-cols-12 gap-6">
           {/* 左侧票房信息 */}
-          <div className="col-span-8 grid grid-rows-[2fr,1fr] gap-6">
+          <div className={isMobile ? "col-span-12 grid grid-rows-[2fr,1fr] gap-10" : "col-span-8 grid grid-rows-[2fr,1fr] gap-6"}>
             {/* 总票房展示 */}
             <div className="bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 flex flex-col justify-center items-center">
               <h2 className="text-white/60 text-xl mb-6 flex items-center gap-2">
@@ -1091,7 +1137,7 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
             </div>
 
             {/* 详细数据指标 */}
-            <div className="grid grid-cols-4 gap-4">
+            <div className={isMobile ? "grid grid-cols-2 gap-2" : "grid grid-cols-4 gap-4"}>
               <DataCard 
                 title="今日排片场次" 
                 value={displayData?.showCount || '0'}
@@ -1124,13 +1170,15 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
           </div>
 
           {/* 右侧轮播图 */}
-          <div className="col-span-4">
+          {
+            !isMobile && <div className="col-span-4">
             <MovieCarousel 
               movieId={movieId} 
               movieName={displayData?.movieInfo?.movieName}
               imgUrl={displayData?.movieInfo?.imgUrl} 
             />
           </div>
+          }
         </div>
 
         {/* 底部信息 */}
