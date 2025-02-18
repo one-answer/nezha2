@@ -1170,7 +1170,7 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
           </div>
 
           {/* 右侧轮播图 */}
-          <div className={isMobile ? "w-full" : "col-span-4"} style={isMobile ? { height: '200px' } : {}}>
+          <div className={isMobile ? "w-full" : "col-span-4"} style={isMobile ? { height: '600px' } : {}}>
             <MovieCarousel
               movieId={movieId}
               movieName={displayData?.movieInfo?.movieName}
