@@ -1104,9 +1104,9 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
         </div>
 
         {/* 主要内容区域 - 使用网格布局 */}
-        <div className="flex-1 grid grid-cols-12 gap-6">
+        <div className={`flex-1 ${isMobile ? 'flex flex-col gap-6' : 'grid grid-cols-12 gap-6'}`}>
           {/* 左侧票房信息 */}
-          <div className={isMobile ? "col-span-12 grid grid-rows-[2fr,1fr] gap-10" : "col-span-8 grid grid-rows-[2fr,1fr] gap-6"}>
+          <div className={isMobile ? "grid grid-rows-[2fr,1fr] gap-10" : "col-span-8 grid grid-rows-[2fr,1fr] gap-6"}>
             {/* 总票房展示 */}
             <div className="bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 flex flex-col justify-center items-center">
               <h2 className="text-white/60 text-xl mb-6 flex items-center gap-2">
@@ -1170,15 +1170,13 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
           </div>
 
           {/* 右侧轮播图 */}
-          {
-            !isMobile && <div className="col-span-4">
-              <MovieCarousel
-                movieId={movieId}
-                movieName={displayData?.movieInfo?.movieName}
-                imgUrl={displayData?.movieInfo?.imgUrl}
-              />
-            </div>
-          }
+          <div className={isMobile ? "w-full" : "col-span-4"} style={isMobile ? { height: '200px' } : {}}>
+            <MovieCarousel
+              movieId={movieId}
+              movieName={displayData?.movieInfo?.movieName}
+              imgUrl={displayData?.movieInfo?.imgUrl}
+            />
+          </div>
         </div>
 
         {/* 底部信息 */}
@@ -1193,4 +1191,4 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
       </div>
     </div>
   );
-} 
+}
