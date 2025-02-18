@@ -9,52 +9,6 @@ import nezha2Banner1 from '../assets/nezha2_banner.webp?url';
 import nezha2Banner2 from '../assets/nezha2_banner2.jpg?url';
 import nezha2Banner3 from '../assets/nezha2_banner3.jpg?url';
 
-const userAgent = window.navigator.userAgent
-
-const ua = () => {
-  const regs = {
-    // 系统
-    // 'ios': /iphone|ipad|ipod/,
-    android: /android/i,
-
-    // 机型
-    iphone: /iphone/i,
-    ipad: /ipad/i,
-    ipod: /ipod/i,
-    vivo: /vivo/i,
-    oppo: /oppo/i,
-    huawei: /huawei/i,
-    redmi: /redmi/i,
-    xiaomi: /xiaomi/i,
-    meizu: /meizu/i,
-
-    // 环境
-    weixin: /micromessenger/i, // 微信
-    mqq: /QQ\//i, // qq
-    app: /inke/i,
-    alipay: /aliapp/i,
-    weibo: /weibo/i,
-    dingtalk: /DingTalk/i, // 钉钉
-
-    // 浏览器
-    chrome: /chrome\//i,
-    qqbrowser: /MQQBrowser/i,
-    baidu: /baidu/i
-  }
-
-  const ret = {}
-  Object.keys(regs).forEach(key => {
-    var reg = regs[key]
-    ret[key] = reg.test(userAgent)
-  })
-  ret.ios = ret.iphone || ret.ipad || ret.ipod
-  ret.mobile = ret.ios || ret.android
-
-  return ret
-}
-
-const isMobile = ua().mobile;
-
 // 票房数据处理 Hook
 const useBoxOfficeData = (data) => {
   return React.useMemo(() => {
@@ -73,9 +27,9 @@ const useBoxOfficeData = (data) => {
 
     try {
       // 解码票房数据
-      const boxNum = data.boxSplitUnit?.num && data.fontStyle ? 
+      const boxNum = data.boxSplitUnit?.num && data.fontStyle ?
         decodeHtmlEntity(data.boxSplitUnit.num, data.fontStyle, 'boxOffice') : '0';
-      const splitBoxNum = data.splitBoxSplitUnit?.num && data.fontStyle ? 
+      const splitBoxNum = data.splitBoxSplitUnit?.num && data.fontStyle ?
         decodeHtmlEntity(data.splitBoxSplitUnit.num, data.fontStyle, 'splitBoxOffice') : '0';
 
       // 数据有效性检查
@@ -186,14 +140,14 @@ const AnimatedBoxOffice = React.memo(({ value, subtitle, isToday }) => {
     <motion.div
       className={`flex flex-col items-center ${isIncreasing ? 'text-green-500' : 'text-orange-500'}`}
       initial={{ scale: 1 }}
-      animate={{ 
+      animate={{
         scale: [1, 1.1, 1],
         color: isIncreasing ? ['#f97316', '#22c55e', '#22c55e'] : ['#22c55e', '#f97316', '#f97316']
       }}
       transition={{ duration: 0.5 }}
     >
-      <AnimatedNumber 
-        value={value} 
+      <AnimatedNumber
+        value={value}
         className={`${isToday ? 'text-5xl md:text-6xl' : 'text-6xl md:text-7xl lg:text-8xl'} font-bold tracking-tight`}
       />
       {subtitle && (
@@ -217,7 +171,7 @@ const AnimatedBoxOffice = React.memo(({ value, subtitle, isToday }) => {
 
 // 数据卡片组件
 const DataCard = React.memo(({ title, value, subtitle, icon, trend }) => (
-  <motion.div 
+  <motion.div
     className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20 hover:border-white/40 transition-colors"
     whileHover={{ scale: 1.02 }}
     transition={{ type: "spring", stiffness: 400 }}
@@ -231,7 +185,7 @@ const DataCard = React.memo(({ title, value, subtitle, icon, trend }) => (
         <AnimatedNumber value={value} />
       </motion.p>
       {subtitle && (
-        <motion.p 
+        <motion.p
           className={`text-sm mt-1 ${trend === 'up' ? 'text-green-400' : trend === 'down' ? 'text-red-400' : 'text-white/60'}`}
         >
           {trend === 'up' ? '↑ ' : trend === 'down' ? '↓ ' : ''}{subtitle}
@@ -250,7 +204,7 @@ const DataCard = React.memo(({ title, value, subtitle, icon, trend }) => (
 // 票房占比进度条组件
 const BoxOfficeProgress = ({ value, total }) => {
   const percentage = (parseFloat(value) / parseFloat(total) * 100).toFixed(1);
-  
+
   return (
     <div className="w-full mt-4">
       <div className="flex justify-between text-sm text-white/60 mb-2">
@@ -380,11 +334,10 @@ const MovieCarousel = React.memo(({ movieId, movieName, imgUrl }) => {
           <motion.button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`h-2 rounded-full transition-all ${
-              index === currentIndex 
-                ? 'bg-white w-6' 
+            className={`h-2 rounded-full transition-all ${index === currentIndex
+                ? 'bg-white w-6'
                 : 'bg-white/40 w-2 hover:bg-white/60'
-            }`}
+              }`}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.9 }}
             aria-label={`切换到第 ${index + 1} 张图片`}
@@ -399,7 +352,7 @@ const MovieCarousel = React.memo(({ movieId, movieName, imgUrl }) => {
 const triggerCelebration = () => {
   // 多彩五彩纸屑
   const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
-  
+
   // 从底部发射
   confetti({
     particleCount: 100,
@@ -566,7 +519,7 @@ const useWebSocket = (movieId) => {
     try {
       const { channel, data, timestamp } = JSON.parse(event.data);
       const handler = messageHandlers[channel];
-      
+
       if (handler) {
         handler({ data, timestamp });
       } else {
@@ -659,7 +612,7 @@ const useWebSocket = (movieId) => {
         console.log(`WebSocket 连接关闭: ${event.code} ${event.reason}`);
         setStatus('disconnected');
         setHeartbeatStatus('inactive');
-        
+
         // 只有在非正常关闭时才重连
         if (event.code !== 1000) {
           reconnect();
@@ -830,7 +783,7 @@ const MovieConfig = React.memo(({ currentMovieId, onMovieChange }) => {
             className="fixed top-16 left-4 z-50 p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-xl w-80"
           >
             <h3 className="text-white/80 text-lg mb-4 font-semibold">选择电影</h3>
-            
+
             {/* 热门电影列表 */}
             <div className="space-y-2 mb-6">
               <p className="text-white/60 text-sm mb-2">热门电影</p>
@@ -842,11 +795,10 @@ const MovieConfig = React.memo(({ currentMovieId, onMovieChange }) => {
                     onMovieChange(movie.id);
                     setIsOpen(false);
                   }}
-                  className={`w-full px-3 py-2 rounded-lg text-left text-sm ${
-                    currentMovieId === movie.id
+                  className={`w-full px-3 py-2 rounded-lg text-left text-sm ${currentMovieId === movie.id
                       ? 'bg-white/20 text-white'
                       : 'bg-white/5 text-white/70 hover:bg-white/10'
-                  }`}
+                    }`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -874,7 +826,7 @@ const MovieConfig = React.memo(({ currentMovieId, onMovieChange }) => {
                   <p className="text-red-400 text-xs mt-1">{errorMessage}</p>
                 )}
               </div>
-              
+
               <div className="flex justify-end gap-2">
                 <motion.button
                   type="button"
@@ -905,19 +857,67 @@ const MovieConfig = React.memo(({ currentMovieId, onMovieChange }) => {
 // 优化主组件
 export default function BoxOffice({ initialMovieId = '1294273' }) {
   const [movieId, setMovieId] = useState(initialMovieId);
-  const { 
-    data: rawData, 
-    status, 
+  const {
+    data: rawData,
+    status,
     heartbeatStatus,
     connectionMetrics,
-    connectionStatus 
+    connectionStatus
   } = useWebSocket(movieId);
-  
+
   const processedData = useBoxOfficeData(rawData);
   const [error, setError] = useState(null);
   const [isCelebrating, setIsCelebrating] = useState(false);
   const celebrationInterval = useRef(null);
   const prevDataRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const userAgent = window.navigator.userAgent;
+    const ua = () => {
+      const regs = {
+        // 系统
+        // 'ios': /iphone|ipad|ipod/,
+        android: /android/i,
+
+        // 机型
+        iphone: /iphone/i,
+        ipad: /ipad/i,
+        ipod: /ipod/i,
+        vivo: /vivo/i,
+        oppo: /oppo/i,
+        huawei: /huawei/i,
+        redmi: /redmi/i,
+        xiaomi: /xiaomi/i,
+        meizu: /meizu/i,
+
+        // 环境
+        weixin: /micromessenger/i, // 微信
+        mqq: /QQ\//i, // qq
+        app: /inke/i,
+        alipay: /aliapp/i,
+        weibo: /weibo/i,
+        dingtalk: /DingTalk/i, // 钉钉
+
+        // 浏览器
+        chrome: /chrome\//i,
+        qqbrowser: /MQQBrowser/i,
+        baidu: /baidu/i
+      }
+
+      const ret = {}
+      Object.keys(regs).forEach(key => {
+        var reg = regs[key]
+        ret[key] = reg.test(userAgent)
+      })
+      ret.ios = ret.iphone || ret.ipad || ret.ipod
+      ret.mobile = ret.ios || ret.android
+
+      return ret
+    }
+
+    setIsMobile(ua().mobile);
+  }, []);
 
   // 保存上一次的有效数据
   useEffect(() => {
@@ -1006,17 +1006,17 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
       <div className="flex items-center gap-2 text-white/60 text-sm">
         <span className={`w-2 h-2 rounded-full ${getStatusColor()} animate-pulse`}></span>
         <span>
-          {connectionMetrics.lastUpdate ? 
-            `${Math.floor((Date.now() - connectionMetrics.lastUpdate) / 1000)}秒前更新` : 
+          {connectionMetrics.lastUpdate ?
+            `${Math.floor((Date.now() - connectionMetrics.lastUpdate) / 1000)}秒前更新` :
             '等待更新...'}
         </span>
         {status !== 'connected' && (
           <>
             <span className="w-1 h-1 rounded-full bg-white/40"></span>
             <span className="text-yellow-400">
-              {status === 'disconnected' ? '正在重连...' : 
-               status === 'error' ? '连接错误' : 
-               status === 'failed' ? '连接失败' : ''}
+              {status === 'disconnected' ? '正在重连...' :
+                status === 'error' ? '连接错误' :
+                  status === 'failed' ? '连接失败' : ''}
             </span>
           </>
         )}
@@ -1027,7 +1027,7 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
   if (!displayData) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -1049,7 +1049,7 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
         <div className="flex justify-between items-center bg-white/5 backdrop-blur-lg rounded-3xl p-4 border border-white/10">
           <div className="flex items-center gap-8">
             <div>
-              <motion.h1 
+              <motion.h1
                 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent"
               >
                 {displayData?.movieInfo?.movieName || '加载中...'}
@@ -1060,7 +1060,7 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
                 <span>全国热映中</span>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               {/* 测试按钮 */}
               <motion.button
@@ -1088,7 +1088,7 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
               )}
             </div>
           </div>
-          
+
           {/* 连接指标 */}
           <div className="text-right bg-white/5 rounded-xl p-2">
             <p className="text-xs text-white/60">连接状态</p>
@@ -1113,8 +1113,8 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
                 <span className="w-2 h-2 rounded-full bg-green-500"></span>
                 累计总票房
               </h2>
-              <AnimatedBoxOffice 
-                value={processedData.displayValue} 
+              <AnimatedBoxOffice
+                value={processedData.displayValue}
                 subtitle=""
                 className="text-8xl lg:text-9xl bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent"
               />
@@ -1138,29 +1138,29 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
 
             {/* 详细数据指标 */}
             <div className={isMobile ? "grid grid-cols-2 gap-2" : "grid grid-cols-4 gap-4"}>
-              <DataCard 
-                title="今日排片场次" 
+              <DataCard
+                title="今日排片场次"
                 value={displayData?.showCount || '0'}
                 subtitle={`排片占比：${displayData?.showCountRate || '0%'}`}
                 icon="🎬"
                 trend={parseFloat(displayData?.showCountRate) > 30 ? 'up' : 'down'}
               />
-              <DataCard 
-                title="今日场均人次" 
+              <DataCard
+                title="今日场均人次"
                 value={displayData?.avgShowView || '0'}
                 subtitle={`同档期第${displayData?.avgShowViewRank || '1'}名`}
                 icon="👥"
                 trend={parseInt(displayData?.avgShowViewRank) <= 2 ? 'up' : 'down'}
               />
-              <DataCard 
-                title="上座率" 
+              <DataCard
+                title="上座率"
                 value={displayData?.avgSeatView || '0%'}
                 subtitle={`${displayData?.splitBoxRate || '0%'} 票房占比`}
                 icon="🎫"
                 trend={parseFloat(displayData?.splitBoxRate) > 30 ? 'up' : 'down'}
               />
-              <DataCard 
-                title="大盘贡献" 
+              <DataCard
+                title="大盘贡献"
                 value={displayData?.boxRate || '0%'}
                 subtitle="实时票房占比"
                 icon="📊"
@@ -1172,12 +1172,12 @@ export default function BoxOffice({ initialMovieId = '1294273' }) {
           {/* 右侧轮播图 */}
           {
             !isMobile && <div className="col-span-4">
-            <MovieCarousel 
-              movieId={movieId} 
-              movieName={displayData?.movieInfo?.movieName}
-              imgUrl={displayData?.movieInfo?.imgUrl} 
-            />
-          </div>
+              <MovieCarousel
+                movieId={movieId}
+                movieName={displayData?.movieInfo?.movieName}
+                imgUrl={displayData?.movieInfo?.imgUrl}
+              />
+            </div>
           }
         </div>
 
